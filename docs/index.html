@@ -1,27 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Bar chart from free codecamp</title>
+  <title>Practice D3.js</title>
 </head>
 <style>
+  body {
+    display: flex;
+    flex-direction: column;
+  }
   .bar:hover {
     fill: brown;
   }
+
+  .meow {
+    background-color: pink;
+  }
+
+  .woof {
+    background-color: green;
+  }
 </style>
 <body>
-  <div class="meow"></div>
   <script src="https://d3js.org/d3.v6.min.js"></script>
   <script>
+    //stupid bar chart
     const dataset = [12, 31, 22, 17, 25, 18, 29, 14, 9];
 
     const w = 500;
     const h = 150;
 
-    const svg = d3.select("body")
+    const svg_bar = d3.select("body")
                   .append("svg")
                   .attr("width", w)
-                  .attr("height", h);
-    svg.selectAll("rect")
+                  .attr("height", h)
+                  .attr("class","meow")
+
+    svg_bar.selectAll("rect")
        .data(dataset)
        .enter()
        .append("rect")
@@ -35,13 +49,55 @@
       .append("title")
       .text((d)=>d)
        // Add your code above this line
-    svg.selectAll("text")
+    svg_bar.selectAll("text")
        .data(dataset)
        .enter()
        .append("text")
        .text((d) => d)
        .attr("x", (d, i) => i * 30)
        .attr("y", (d, i) => h - (d * 3 + 3))
+
+       //pie chart
+
+    const w_pie = 500;
+    const h_pie = 500;
+    const margin = 20;
+
+    const radius = Math.min(w_pie, h_pie)/2 - margin
+
+    const data = [1, 2, 3, 4, 5]
+
+    var color = d3.scaleOrdinal()
+                  .domain(data)
+                  .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56"])
+
+    const pie_data = d3.pie()(data) //phan chia data
+
+    const svg_pie = d3.select("body")
+                  .append("svg")
+                  .attr("width",w_pie)
+                  .attr("height",h_pie)
+                  .attr("class","woof")
+
+
+    svg_pie.append("g")
+            .attr("stroke", "white")
+            .attr("transform", "translate("+ w_pie/2 + "," + h_pie/2+ ")")
+          .selectAll("path")
+          .data(pie_data)
+          .join("path")
+            .attr("fill", d => color(d.data))
+            .attr("d", d3.arc()
+              .innerRadius(0)
+              .outerRadius(radius)
+            )
+          .append("title")
+            .text( (d) => d )
+    //draw arc
+
+    svg_pie.selectAll("arc")
+          .data(pie_data)
+
   </script>
 </body>
 </html>
